@@ -148,7 +148,7 @@ db.serialize(() => {
   db.run(`CREATE INDEX IF NOT EXISTS idx_processed_leads_workflow ON workflow_processed_leads(workflow_id)`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_processed_leads_email ON workflow_processed_leads(lead_email)`);
 
-  // AI 알림봇 설정 테이블
+  // AI 알림봇 설정 테이블 (ai_bot_settings - 기존 호환성 유지)
   db.run(`
     CREATE TABLE IF NOT EXISTS ai_bot_settings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -160,9 +160,35 @@ db.serialize(() => {
     )
   `);
 
-  // AI 알림봇 템플릿 선택 테이블
+  // AI 알림봇 템플릿 선택 테이블 (ai_bot_templates - 기존 호환성 유지)
   db.run(`
     CREATE TABLE IF NOT EXISTS ai_bot_templates (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      industry TEXT NOT NULL DEFAULT 'shopping',
+      template_id INTEGER NOT NULL,
+      template_name TEXT NOT NULL,
+      is_selected BOOLEAN DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(industry, template_id)
+    )
+  `);
+
+  // AI 알림봇 설정 테이블 (ai_alimbot_settings - 새 용어)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS ai_alimbot_settings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      industry TEXT NOT NULL DEFAULT 'shopping',
+      payment_config TEXT,
+      integration_config TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // AI 알림봇 템플릿 선택 테이블 (ai_alimbot_templates - 새 용어)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS ai_alimbot_templates (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       industry TEXT NOT NULL DEFAULT 'shopping',
       template_id INTEGER NOT NULL,

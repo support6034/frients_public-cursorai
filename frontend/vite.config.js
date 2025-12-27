@@ -6,6 +6,14 @@ export default defineConfig({
   base: process.env.VERCEL ? '/' : (process.env.NODE_ENV === 'production' ? '/cursorai/' : '/'),
   build: {
     outDir: 'dist'
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
   }
 })
 

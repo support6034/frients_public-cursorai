@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const db = require('./database');
 const gateway = require('./gateway');
+const aiAlimbotRouter = require('./routes/ai-alimbot');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -2376,6 +2377,11 @@ app.post('/api/test/wf-gtm-event', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+// ============================================
+// AI 알림봇 라우터 등록 (새 용어: ai-alimbot)
+// ============================================
+app.use('/api/ai-alimbot', aiAlimbotRouter);
 
 // 서버 시작
 app.listen(PORT, () => {

@@ -9,8 +9,8 @@ const getBackendURL = () => {
     return process.env.REACT_APP_API_URL;
   }
   
-  // 2. 개발 환경: package.json의 proxy 설정 사용 (localhost:5000)
-  if (process.env.NODE_ENV === 'development') {
+  // 2. 개발 환경: Vite proxy 설정 사용 (localhost:5000)
+  if (import.meta.env.DEV) {
     return ''; // proxy 사용
   }
   
@@ -23,7 +23,7 @@ const getBackendURL = () => {
 
   // GitLab Pages 도메인에서 실행 중인 경우
   if (window.location.hostname.includes('gitlab.io')) {
-    return 'https://grouptest-backend-production.up.railway.app';
+    return 'https://workflow-automation-y5df.onrender.com';
   }
   
   // 4. 기본값: 빈 문자열
