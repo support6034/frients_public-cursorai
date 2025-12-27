@@ -1,0 +1,256 @@
+.payment-settings {
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.payment-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.payment-header h1 {
+  font-size: 2rem;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.payment-header p {
+  font-size: 1rem;
+  color: #718096;
+}
+
+.payment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* 잔액 카드 */
+.balance-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.balance-label {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.balance-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.balance-description {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+/* 충전 금액 선택 */
+.charge-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.charge-section h2 {
+  font-size: 1.25rem;
+  color: #1a202c;
+  margin-bottom: 1.5rem;
+}
+
+.charge-amounts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.charge-amount-btn {
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.charge-amount-btn:hover {
+  border-color: #667eea;
+  background: #f7fafc;
+}
+
+.charge-amount-btn.active {
+  border-color: #667eea;
+  background: #f0f4ff;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.custom-amount-input {
+  margin-top: 1rem;
+}
+
+.custom-amount-input label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.custom-amount-input .form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.input-hint {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+/* 결제 수단 선택 */
+.payment-method-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.payment-method-section h2 {
+  font-size: 1.25rem;
+  color: #1a202c;
+  margin-bottom: 1.5rem;
+}
+
+.payment-methods {
+  display: flex;
+  gap: 2rem;
+}
+
+.payment-method-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.payment-method-option:hover {
+  border-color: #667eea;
+  background: #f7fafc;
+}
+
+.payment-method-option input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.payment-method-option input[type="radio"]:checked + span {
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* 충전 버튼 */
+.charge-action {
+  text-align: center;
+}
+
+.btn-large {
+  padding: 1rem 3rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 충전 내역 */
+.charge-history-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.charge-history-section h2 {
+  font-size: 1.25rem;
+  color: #1a202c;
+  margin-bottom: 1.5rem;
+}
+
+.empty-history {
+  text-align: center;
+  padding: 3rem;
+  color: #718096;
+}
+
+.charge-history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.charge-history-table th {
+  background: #f7fafc;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.charge-history-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #2d3748;
+}
+
+.charge-history-table tr:hover {
+  background: #f7fafc;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-badge.success {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.status-badge.pending {
+  background: #feebc8;
+  color: #744210;
+}
+
+.status-badge.failed {
+  background: #fed7d7;
+  color: #742a2a;
+}
+

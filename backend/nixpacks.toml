@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["maven", "jdk17"]
+
+[phases.build]
+cmds = ["cd backend && mvn clean package -DskipTests"]
+
+[phases.start]
+cmd = "java -jar backend/target/backend-1.0.0.jar"
+
+
+

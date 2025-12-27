@@ -1,0 +1,124 @@
+.home-page {
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+}
+
+.home-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.home-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.home-hero p {
+  font-size: 1.125rem;
+  color: #718096;
+}
+
+.home-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.menu-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  border-color: #667eea;
+}
+
+.menu-card.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.menu-card.disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border-color: transparent;
+}
+
+.menu-card-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.menu-card.disabled .menu-card-icon {
+  background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+}
+
+.menu-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.75rem;
+}
+
+.menu-card p {
+  font-size: 0.9375rem;
+  color: #718096;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.menu-card-arrow {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  font-size: 1.5rem;
+  color: #667eea;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+}
+
+.menu-card:hover .menu-card-arrow {
+  transform: translateX(4px);
+}
+
+.menu-card-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #fed7d7;
+  color: #742a2a;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .home-hero h1 {
+    font-size: 2rem;
+  }
+
+  .home-menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

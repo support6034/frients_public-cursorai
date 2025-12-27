@@ -1,0 +1,105 @@
+.condition-group {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.group-label {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.btn-remove-group {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.btn-remove-group:hover {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
+.group-content {
+  padding: 0.75rem;
+}
+
+.group-empty {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.8125rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 2px dashed #e2e8f0;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.group-logic-toggle {
+  display: flex;
+  justify-content: center;
+  padding: 0.375rem 0;
+}
+
+.group-add-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-add-small {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e0;
+  border-radius: 6px;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-small:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: white;
+}
+
+/* Group Logic Separator (between groups) */
+.group-logic-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0;
+  position: relative;
+}
+
+.group-logic-separator::before,
+.group-logic-separator::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+}
+
+.group-logic-separator .logic-toggle {
+  margin: 0 1rem;
+}

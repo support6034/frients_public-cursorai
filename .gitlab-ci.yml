@@ -1,0 +1,29 @@
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  image: node:18-alpine
+  script:
+    - echo "Starting frontend deployment"
+    - cd frontend
+    - echo "Installing dependencies"
+    - npm install
+    - echo "Building Vue.js application"
+    - npm run build
+    - echo "Build completed"
+    - echo "Preparing public directory"
+    - cd ..
+    - rm -rf public
+    - mkdir -p public
+    - echo "Copying build files to public directory"
+    - cp -r frontend/dist/* public/
+    - cp frontend/dist/index.html public/404.html
+    - echo "Deployment files ready"
+    - ls -la public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+

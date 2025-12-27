@@ -1,0 +1,184 @@
+.workflow-editor {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.editor-header h2 {
+  color: #2d3748;
+  font-size: 1.5rem;
+}
+
+.editor-body {
+  max-width: 900px;
+}
+
+/* 목표 설정 모달 */
+.goal-modal {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.goal-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.goal-modal-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.goal-modal-header .modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #a0aec0;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.goal-modal-header .modal-close:hover {
+  color: #4a5568;
+}
+
+.goal-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.goal-description {
+  margin: 0 0 1rem 0;
+  padding: 0.75rem 1rem;
+  background: #ebf8ff;
+  border: 1px solid #90cdf4;
+  border-radius: 6px;
+  color: #2b6cb0;
+  font-size: 0.875rem;
+}
+
+/* 목표 빌더 */
+.goal-builder {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.goal-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.goal-number {
+  padding: 0.25rem 0.75rem;
+  background: #38a169;
+  color: white;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  margin-right: 0.75rem;
+}
+
+.goal-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1a202c;
+}
+
+.goal-content {
+  padding: 1rem;
+}
+
+.goal-content .empty-state {
+  text-align: center;
+  color: #718096;
+  padding: 2rem;
+  background: white;
+  border: 2px dashed #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.goal-content .add-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.goal-content .btn-add {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 2px dashed #38a169;
+  border-radius: 8px;
+  color: #38a169;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.goal-content .btn-add:hover {
+  background: #38a169;
+  color: white;
+  border-style: solid;
+}
+
+.goal-content .group-logic-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.goal-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+/* 모달 오버레이 (공통) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
