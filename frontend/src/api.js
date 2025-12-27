@@ -15,15 +15,19 @@ const getBackendURL = () => {
   }
   
   // 3. 프로덕션: Railway 백엔드 URL
-  // grouptest.changups.kr 또는 Vercel 도메인에서 실행 중인 경우
-  if (window.location.hostname.includes('changups.kr') ||
-      window.location.hostname.includes('vercel.app')) {
-    return 'https://grouptest-backend-production.up.railway.app';
+  // cursorAI 프로젝트의 새로운 백엔드 URL (배포 후 업데이트 필요)
+  // Vercel 도메인에서 실행 중인 경우
+  if (window.location.hostname.includes('vercel.app') ||
+      window.location.hostname.includes('changups.kr')) {
+    // TODO: Railway 백엔드 배포 후 실제 URL로 변경
+    // 예상: https://cursorai-backend.up.railway.app
+    return process.env.VITE_API_URL || '';
   }
 
   // GitLab Pages 도메인에서 실행 중인 경우 (개발용)
   if (window.location.hostname.includes('gitlab.io')) {
-    return 'https://grouptest-backend-production.up.railway.app';
+    // TODO: Railway 백엔드 배포 후 실제 URL로 변경
+    return process.env.VITE_API_URL || '';
   }
   
   // 4. 기본값: 빈 문자열
