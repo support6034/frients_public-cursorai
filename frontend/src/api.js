@@ -15,15 +15,15 @@ const getBackendURL = () => {
   }
   
   // 3. 프로덕션: Railway 백엔드 URL
-  // changups.kr 또는 Vercel 도메인에서 실행 중인 경우
+  // grouptest.changups.kr 또는 Vercel 도메인에서 실행 중인 경우
   if (window.location.hostname.includes('changups.kr') ||
       window.location.hostname.includes('vercel.app')) {
-    return 'https://workflow-backend-production-cdd6.up.railway.app';
+    return 'https://grouptest-backend-production.up.railway.app';
   }
 
   // GitLab Pages 도메인에서 실행 중인 경우 (개발용)
   if (window.location.hostname.includes('gitlab.io')) {
-    return 'https://workflow-backend-production-cdd6.up.railway.app';
+    return 'https://grouptest-backend-production.up.railway.app';
   }
   
   // 4. 기본값: 빈 문자열
