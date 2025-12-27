@@ -48,3 +48,4 @@ ALLOWED_ORIGINS=https://frients_public.gitlab.io
    - 프론트엔드에서 백엔드 URL 업데이트
    - 기능 테스트
 
+

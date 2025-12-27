@@ -10,14 +10,14 @@
     <nav class="ai-bot-nav flex justify-center bg-white border-b border-gray-200">
       <button
         :class="['nav-btn px-8 py-4 bg-transparent border-none border-b-2 transition-all', 
-                 activeTab === 'dashboard' ? 'text-indigo-500 border-indigo-500 font-medium' : 'text-gray-500 border-transparent']"
+                 activeTab.value === 'dashboard' ? 'text-indigo-500 border-indigo-500 font-medium' : 'text-gray-500 border-transparent']"
         @click="setActiveTab('dashboard')"
       >
         대시보드
       </button>
       <button
         :class="['nav-btn px-8 py-4 bg-transparent border-none border-b-2 transition-all',
-                 activeTab === 'settings' ? 'text-indigo-500 border-indigo-500 font-medium' : 'text-gray-500 border-transparent']"
+                 activeTab.value === 'settings' ? 'text-indigo-500 border-indigo-500 font-medium' : 'text-gray-500 border-transparent']"
         @click="setActiveTab('settings')"
       >
         설정
@@ -27,13 +27,13 @@
     <!-- 컨텐츠 -->
     <div class="ai-bot-content max-w-7xl mx-auto px-4 py-8">
       <!-- 대시보드 탭 -->
-      <div v-if="activeTab === 'dashboard'">
+      <div v-if="activeTab.value === 'dashboard'">
         <DashboardSection />
         <DebugLogViewer />
       </div>
 
       <!-- 설정 탭 -->
-      <div v-if="activeTab === 'settings'">
+      <div v-if="activeTab.value === 'settings'">
         <SettingsSection />
       </div>
     </div>
@@ -42,19 +42,19 @@
 
 <script setup>
 import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useNotificationStore } from '../../stores/notification'
 import DashboardSection from '../../components/notification/DashboardSection.vue'
 import SettingsSection from '../../components/notification/SettingsSection.vue'
 import DebugLogViewer from '../../components/notification/DebugLogViewer.vue'
 
 const store = useNotificationStore()
+const { activeTab, selectedIndustry } = storeToRefs(store)
 
 const {
-  activeTab,
   setActiveTab,
   fetchSettings,
-  fetchTemplates,
-  selectedIndustry
+  fetchTemplates
 } = store
 
 onMounted(async () => {
@@ -62,8 +62,8 @@ onMounted(async () => {
 })
 
 const loadInitialData = async () => {
-  await fetchSettings(selectedIndustry)
-  await fetchTemplates(selectedIndustry)
+  await fetchSettings(selectedIndustry.value)
+  await fetchTemplates(selectedIndustry.value)
 }
 </script>
 

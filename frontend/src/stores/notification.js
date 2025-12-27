@@ -125,13 +125,14 @@ export const useNotificationStore = defineStore('notification', {
     },
 
     // 템플릿 ID 배열로 저장
-    async saveTemplatesByIds(templateIds) {
+    async saveTemplatesByIds(templateIds, industry = null) {
       try {
+        const industryParam = industry || this.selectedIndustry
         const response = await api.post('/api/ai-bot/templates/ids', {
           templateIds: templateIds
         }, {
           params: {
-            industry: this.selectedIndustry
+            industry: industryParam
           }
         })
         if (response.data.success) {
@@ -145,11 +146,12 @@ export const useNotificationStore = defineStore('notification', {
     },
 
     // 연동 설정 저장
-    async saveIntegration(integration) {
+    async saveIntegration(integration, industry = null) {
       try {
+        const industryParam = industry || this.selectedIndustry
         const response = await api.post('/api/ai-bot/integration', integration, {
           params: {
-            industry: this.selectedIndustry
+            industry: industryParam
           }
         })
         if (response.data.success) {
@@ -163,11 +165,12 @@ export const useNotificationStore = defineStore('notification', {
     },
 
     // 워크플로우 동기화
-    async syncWorkflows(industry = 'shopping') {
+    async syncWorkflows(industry = null) {
       try {
+        const industryParam = industry || this.selectedIndustry
         const response = await api.post('/api/ai-bot/sync-workflows', null, {
           params: {
-            industry: industry
+            industry: industryParam
           }
         })
         if (response.data.success) {
@@ -180,14 +183,17 @@ export const useNotificationStore = defineStore('notification', {
     },
 
     // 설정 및 템플릿 저장 후 워크플로우 동기화
-    async saveSettingsAndSync(settings, templateIds) {
+    async saveSettingsAndSync(settings, templateIds, industry = null) {
       try {
+        const industryParam = industry || this.selectedIndustry
         // 설정 저장
-        await this.saveSettings(settings)
+        if (settings) {
+          await this.saveSettings(settings)
+        }
         // 템플릿 저장
-        await this.saveTemplatesByIds(templateIds)
+        await this.saveTemplatesByIds(templateIds, industryParam)
         // 워크플로우 동기화
-        const syncResult = await this.syncWorkflows(this.selectedIndustry)
+        const syncResult = await this.syncWorkflows(industryParam)
         return syncResult
       } catch (error) {
         this.error = error.message

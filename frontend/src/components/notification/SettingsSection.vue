@@ -18,19 +18,19 @@
           <label class="block mb-2 font-medium text-gray-700">
             <input
               type="checkbox"
-              v-model="integration.smartstore.enabled"
+              v-model="integration.value.smartstore.enabled"
               class="mr-2"
             />
             스마트스토어 연동 활성화
           </label>
         </div>
 
-        <div v-if="integration.smartstore.enabled" class="space-y-4">
+        <div v-if="integration.value.smartstore.enabled" class="space-y-4">
           <div class="form-group">
             <label class="block mb-2 font-medium text-gray-700">API Key</label>
             <input
               type="text"
-              v-model="integration.smartstore.apiKey"
+              v-model="integration.value.smartstore.apiKey"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
               placeholder="스마트스토어 API Key 입력"
             />
@@ -40,7 +40,7 @@
             <label class="block mb-2 font-medium text-gray-700">API Secret</label>
             <input
               type="password"
-              v-model="integration.smartstore.apiSecret"
+              v-model="integration.value.smartstore.apiSecret"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
               placeholder="스마트스토어 API Secret 입력"
             />
@@ -50,7 +50,7 @@
             <label class="block mb-2 font-medium text-gray-700">스토어 ID</label>
             <input
               type="text"
-              v-model="integration.smartstore.storeId"
+              v-model="integration.value.smartstore.storeId"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
               placeholder="스마트스토어 ID 입력"
             />
@@ -59,9 +59,9 @@
           <button
             class="btn-primary px-6 py-3 bg-indigo-500 text-white rounded-lg font-medium hover:bg-indigo-600 transition-colors"
             @click="handleSaveIntegration"
-            :disabled="loading"
+            :disabled="loading.value"
           >
-            {{ loading ? '저장 중...' : '연동 설정 저장' }}
+            {{ loading.value ? '저장 중...' : '연동 설정 저장' }}
           </button>
         </div>
       </div>
@@ -74,17 +74,17 @@
       <div class="settings-card bg-white border border-gray-200 rounded-lg p-8 mt-4">
         <div class="templates-list space-y-2 mb-8">
           <div
-            v-for="template in shoppingTemplates"
+            v-for="template in shoppingTemplates.value"
             :key="template.id"
             :class="[
               'template-item flex items-center p-4 border rounded-lg cursor-pointer transition-all',
-              selectedTemplates.includes(template.id) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-500 hover:bg-gray-50'
+              selectedTemplates.value.includes(template.id) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-500 hover:bg-gray-50'
             ]"
             @click="handleTemplateToggle(template.id)"
           >
             <input
               type="checkbox"
-              :checked="selectedTemplates.includes(template.id)"
+              :checked="selectedTemplates.value.includes(template.id)"
               @change="handleTemplateToggle(template.id)"
               class="mr-4 w-5 h-5 cursor-pointer"
             />
@@ -100,7 +100,7 @@
           @click="handleSaveSettings"
           :disabled="loading"
         >
-          {{ loading ? '저장 중...' : '템플릿 선택 저장' }}
+            {{ loading.value ? '저장 중...' : '템플릿 선택 저장' }}
         </button>
       </div>
     </div>
@@ -109,16 +109,14 @@
 
 <script setup>
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useNotificationStore } from '../../stores/notification'
 import PaymentSettings from './PaymentSettings.vue'
 
 const store = useNotificationStore()
+const { integration, selectedTemplates, shoppingTemplates, loading, settings } = storeToRefs(store)
 
 const {
-  integration,
-  selectedTemplates,
-  shoppingTemplates,
-  loading,
   toggleTemplate,
   saveIntegration,
   saveSettingsAndSync
@@ -130,7 +128,7 @@ const handleTemplateToggle = (templateId) => {
 
 const handleSaveIntegration = async () => {
   try {
-    await saveIntegration(integration)
+    await saveIntegration(integration.value)
     alert('연동 설정이 저장되었습니다.')
   } catch (error) {
     alert('연동 설정 저장에 실패했습니다: ' + (error.message || '알 수 없는 오류'))
@@ -139,7 +137,7 @@ const handleSaveIntegration = async () => {
 
 const handleSaveSettings = async () => {
   try {
-    const syncResult = await saveSettingsAndSync(store.settings, selectedTemplates)
+    const syncResult = await saveSettingsAndSync(settings.value, selectedTemplates.value)
     if (syncResult) {
       alert(`설정이 저장되었습니다.\n${syncResult.message || '워크플로우가 동기화되었습니다.'}`)
     }

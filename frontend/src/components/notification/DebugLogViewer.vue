@@ -71,11 +71,11 @@
     </div>
 
     <div class="debug-log-list">
-      <div v-if="debugLogs.length === 0" class="empty-logs text-center py-8 text-gray-500">
+      <div v-if="debugLogs.value.length === 0" class="empty-logs text-center py-8 text-gray-500">
         로그가 없습니다.
       </div>
       <div
-        v-for="log in debugLogs"
+        v-for="log in debugLogs.value"
         :key="log.id"
         :class="[
           'debug-log-item p-4 border rounded-lg mb-2',
@@ -125,12 +125,14 @@
 
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useNotificationStore } from '../../stores/notification'
 import api from '../../api'
 
 const store = useNotificationStore()
+const { debugLogs } = storeToRefs(store)
 
-const { debugLogs, fetchDebugLogs } = store
+const { fetchDebugLogs } = store
 
 const loading = ref(false)
 const autoRefresh = ref(true)

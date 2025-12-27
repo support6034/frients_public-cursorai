@@ -9,7 +9,7 @@
       <!-- 잔액 표시 -->
       <div class="balance-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-8 rounded-lg mb-8 text-center">
         <div class="balance-label text-lg mb-2">현재 잔액</div>
-        <div class="balance-amount text-4xl font-bold mb-2">{{ formatCurrency(paymentBalance) }}</div>
+        <div class="balance-amount text-4xl font-bold mb-2">{{ formatCurrency(paymentBalance.value) }}</div>
         <div class="balance-description text-sm opacity-90">
           알림톡 발송 시 자동으로 차감됩니다
         </div>
@@ -95,7 +95,7 @@
       <!-- 충전 내역 -->
       <div class="charge-history-section">
         <h2 class="text-xl font-bold text-gray-900 mb-4">충전 내역</h2>
-        <div v-if="paymentHistory.length === 0" class="empty-history text-center py-8 text-gray-500">
+        <div v-if="paymentHistory.value.length === 0" class="empty-history text-center py-8 text-gray-500">
           충전 내역이 없습니다.
         </div>
         <table v-else class="charge-history-table w-full border-collapse">
@@ -109,7 +109,7 @@
           </thead>
           <tbody>
             <tr
-              v-for="item in paymentHistory"
+              v-for="item in paymentHistory.value"
               :key="item.id"
               class="hover:bg-gray-50"
             >
@@ -140,14 +140,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useNotificationStore } from '../../stores/notification'
 import api from '../../api'
 
 const store = useNotificationStore()
+const { paymentBalance, paymentHistory } = storeToRefs(store)
 
 const {
-  paymentBalance,
-  paymentHistory,
   fetchPaymentBalance,
   fetchPaymentHistory,
   chargePayment,
