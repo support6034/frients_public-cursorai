@@ -18,7 +18,7 @@ const routes = [
   {
     path: '/ai-bot',
     name: 'ai-bot',
-    component: () => import('../views/AIAlimbotView.vue')
+    component: () => import('../views/notification/AIBotView.vue')
   },
   {
     path: '/lists/:id',
