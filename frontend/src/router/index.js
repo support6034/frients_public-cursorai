@@ -3,6 +3,7 @@ import HomePage from '../views/HomePage.vue'
 import MarketingAutomation from '../views/MarketingAutomation.vue'
 import ListManager from '../views/ListManager.vue'
 import LogViewer from '../views/LogViewer.vue'
+import AIAlimbotView from '../views/AIAlimbotView.vue'
 
 const routes = [
   {
@@ -18,7 +19,7 @@ const routes = [
   {
     path: '/ai-bot',
     name: 'ai-bot',
-    component: () => import('../views/AIAlimbotView.vue')
+    component: AIAlimbotView
   },
   {
     path: '/lists/:id',
