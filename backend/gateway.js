@@ -17,7 +17,7 @@ class SmartStoreGateway {
   async loadSettings() {
     return new Promise((resolve, reject) => {
       db.get(
-        "SELECT integration_config FROM ai_bot_settings WHERE industry = 'shopping' ORDER BY updated_at DESC LIMIT 1",
+        "SELECT integration_config FROM ai_alimbot_settings WHERE industry = 'shopping' ORDER BY updated_at DESC LIMIT 1",
         (err, row) => {
           if (err) {
             reject(err);

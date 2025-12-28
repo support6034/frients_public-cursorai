@@ -1682,9 +1682,9 @@ app.put('/api/workflows/:id/folder', (req, res) => {
 // ============================================
 
 // AI 알림봇 설정 조회
-app.get('/api/ai-bot/settings', (req, res) => {
+app.get('/api/ai-alimbot/settings', (req, res) => {
   db.get(
-    "SELECT * FROM ai_bot_settings WHERE industry = 'shopping' ORDER BY updated_at DESC LIMIT 1",
+    "SELECT * FROM ai_alimbot_settings WHERE industry = 'shopping' ORDER BY updated_at DESC LIMIT 1",
     (err, row) => {
       if (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -1710,11 +1710,11 @@ app.get('/api/ai-bot/settings', (req, res) => {
 });
 
 // AI 알림봇 설정 저장
-app.post('/api/ai-bot/settings', (req, res) => {
+app.post('/api/ai-alimbot/settings', (req, res) => {
   const { payment, integration } = req.body;
 
   db.run(
-    `INSERT OR REPLACE INTO ai_bot_settings (industry, payment_config, integration_config, updated_at)
+    `INSERT OR REPLACE INTO ai_alimbot_settings (industry, payment_config, integration_config, updated_at)
      VALUES ('shopping', ?, ?, CURRENT_TIMESTAMP)`,
     [JSON.stringify(payment || {}), JSON.stringify(integration || {})],
     function(err) {
@@ -1728,11 +1728,11 @@ app.post('/api/ai-bot/settings', (req, res) => {
 });
 
 // AI 알림봇 연동 설정 저장
-app.post('/api/ai-bot/integration', (req, res) => {
+app.post('/api/ai-alimbot/integration', (req, res) => {
   const integration = req.body;
 
   db.get(
-    "SELECT * FROM ai_bot_settings WHERE industry = 'shopping' ORDER BY updated_at DESC LIMIT 1",
+    "SELECT * FROM ai_alimbot_settings WHERE industry = 'shopping' ORDER BY updated_at DESC LIMIT 1",
     (err, row) => {
       if (err) {
         return res.status(500).json({ success: false, error: err.message });
@@ -1742,7 +1742,7 @@ app.post('/api/ai-bot/integration', (req, res) => {
       const newIntegration = JSON.stringify(integration || {});
 
       db.run(
-        `INSERT OR REPLACE INTO ai_bot_settings (industry, payment_config, integration_config, updated_at)
+        `INSERT OR REPLACE INTO ai_alimbot_settings (industry, payment_config, integration_config, updated_at)
          VALUES ('shopping', ?, ?, CURRENT_TIMESTAMP)`,
         [JSON.stringify(currentSettings), newIntegration],
         function(err) {
@@ -1758,9 +1758,9 @@ app.post('/api/ai-bot/integration', (req, res) => {
 });
 
 // AI 알림봇 템플릿 조회
-app.get('/api/ai-bot/templates', (req, res) => {
+app.get('/api/ai-alimbot/templates', (req, res) => {
   db.all(
-    "SELECT template_id FROM ai_bot_templates WHERE industry = 'shopping' AND is_selected = 1",
+    "SELECT template_id FROM ai_alimbot_templates WHERE industry = 'shopping' AND is_selected = 1",
     (err, rows) => {
       if (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -1773,7 +1773,7 @@ app.get('/api/ai-bot/templates', (req, res) => {
 });
 
 // AI 알림봇 템플릿 저장
-app.post('/api/ai-bot/templates', (req, res) => {
+app.post('/api/ai-alimbot/templates', (req, res) => {
   const { templateIds } = req.body;
 
   if (!Array.isArray(templateIds)) {
@@ -1782,7 +1782,7 @@ app.post('/api/ai-bot/templates', (req, res) => {
 
   // 기존 선택 해제
   db.run(
-    "UPDATE ai_bot_templates SET is_selected = 0 WHERE industry = 'shopping'",
+    "UPDATE ai_alimbot_templates SET is_selected = 0 WHERE industry = 'shopping'",
     (err) => {
       if (err) {
         return res.status(500).json({ success: false, error: err.message });
@@ -1790,7 +1790,7 @@ app.post('/api/ai-bot/templates', (req, res) => {
 
       // 새 템플릿 선택
       const stmt = db.prepare(
-        `INSERT OR REPLACE INTO ai_bot_templates (industry, template_id, template_name, is_selected, updated_at)
+        `INSERT OR REPLACE INTO ai_alimbot_templates (industry, template_id, template_name, is_selected, updated_at)
          VALUES ('shopping', ?, ?, 1, CURRENT_TIMESTAMP)`
       );
 
@@ -1844,12 +1844,12 @@ app.get('/api/gateway/status', (req, res) => {
 });
 
 // AI 알림봇 템플릿에 맞는 워크플로우 자동 생성/업데이트
-app.post('/api/ai-bot/sync-workflows', async (req, res) => {
+app.post('/api/ai-alimbot/sync-workflows', async (req, res) => {
   try {
     // 선택된 템플릿 조회
     const templatesRes = await new Promise((resolve, reject) => {
       db.all(
-        "SELECT template_id, template_name FROM ai_bot_templates WHERE industry = 'shopping' AND is_selected = 1",
+        "SELECT template_id, template_name FROM ai_alimbot_templates WHERE industry = 'shopping' AND is_selected = 1",
         (err, rows) => {
           if (err) reject(err);
           else resolve(rows);
@@ -1860,7 +1860,7 @@ app.post('/api/ai-bot/sync-workflows', async (req, res) => {
     // 연동 설정 조회
     const settingsRes = await new Promise((resolve, reject) => {
       db.get(
-        "SELECT integration_config FROM ai_bot_settings WHERE industry = 'shopping' ORDER BY updated_at DESC LIMIT 1",
+        "SELECT integration_config FROM ai_alimbot_settings WHERE industry = 'shopping' ORDER BY updated_at DESC LIMIT 1",
         (err, row) => {
           if (err) reject(err);
           else resolve(row);
