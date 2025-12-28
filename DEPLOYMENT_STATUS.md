@@ -1,36 +1,46 @@
-# 배포 진행 상황
+# cursorAI 배포 상태
 
-## 현재 상태
+**작성일**: 2025-12-27  
+**배포 URL**: https://cursorai.changups.kr
 
-### 빌드 테스트
-- Frontend 빌드: 진행 중
-- Backend 테스트: 필요
+---
 
-### 배포 준비
-- Git 저장소 확인: 필요
-- 배포 플랫폼 계정: 필요
+## 배포 진행 상황
 
-## 필요한 정보
+### 현재 상태
+- ⏳ **배포 진행 중**
 
-1. **Vercel 계정** (Frontend 배포용)
-   - 이메일 또는 GitHub/GitLab 연동
+### 배포 방법
+배포 절차서 참고: `C:\Users\hckim\frients_public\claudeAI\docs\배포절차서.md`
 
-2. **Railway 계정** (Backend 배포용)
-   - 이메일 또는 GitHub 연동
+---
 
-3. **Git 저장소 정보**
-   - 저장소 URL 확인
-   - 브랜치 정보 확인
+## Frontend 배포 (Vercel)
 
-4. **환경 변수**
-   - 백엔드 URL (Railway 배포 후)
-   - CORS 설정 (프론트엔드 URL)
+### 방법 1: Vercel CLI (npx 인식 불가로 대시보드 사용)
+- Vercel 대시보드에서 배포 진행 중
 
-## 다음 단계
+### 방법 2: Vercel 대시보드
+1. https://vercel.com 접속
+2. "New Project" 클릭
+3. GitLab 저장소 연결: `frients_public/cursorai`
+4. Root Directory: `frontend`
+5. Framework: Vite
+6. 환경 변수: `VITE_API_URL` (Railway 백엔드 URL)
+7. Deploy 클릭
 
-1. 빌드 성공 확인
-2. Git 저장소 확인
-3. 배포 플랫폼 선택
-4. 배포 실행
+---
 
+## Backend 배포 (Railway)
 
+### 배포 방법
+1. https://railway.app 접속
+2. "New Project" → "Deploy from GitLab repo"
+3. 저장소: `frients_public/cursorai`
+4. Root Directory: `backend`
+5. 환경 변수 설정
+6. 배포 실행
+
+---
+
+**배포 진행 중**
