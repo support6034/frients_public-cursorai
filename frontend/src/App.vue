@@ -19,7 +19,7 @@
             마케팅자동화
           </router-link>
           <router-link
-            to="/ai-bot"
+            to="/ai-alimbot"
             class="top-menu-btn px-4 py-3 text-gray-700 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 transition-colors"
             active-class="text-blue-600 border-blue-600"
           >

@@ -14,7 +14,7 @@ export const useAiBotStore = defineStore('aiBot', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.get(`/api/ai-bot/settings?industry=${industry}`)
+        const response = await api.get(`/api/ai-alimbot/settings?industry=${industry}`)
         if (response.data.success) {
           this.settings = response.data.data
         }
@@ -28,7 +28,7 @@ export const useAiBotStore = defineStore('aiBot', {
     
     async saveSettings(settings) {
       try {
-        const response = await api.post('/api/ai-bot/settings', settings)
+        const response = await api.post('/api/ai-alimbot/settings', settings)
         if (response.data.success) {
           this.settings = response.data.data
           return response.data.data
@@ -43,7 +43,7 @@ export const useAiBotStore = defineStore('aiBot', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.get(`/api/ai-bot/templates?industry=${industry}`)
+        const response = await api.get(`/api/ai-alimbot/templates?industry=${industry}`)
         if (response.data.success) {
           this.templates = response.data.data
         }
@@ -57,7 +57,7 @@ export const useAiBotStore = defineStore('aiBot', {
     
     async saveTemplates(templates) {
       try {
-        const response = await api.post('/api/ai-bot/templates', templates)
+        const response = await api.post('/api/ai-alimbot/templates', templates)
         if (response.data.success) {
           this.templates = response.data.data
           return response.data.data

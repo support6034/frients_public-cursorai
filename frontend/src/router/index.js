@@ -17,9 +17,18 @@ const routes = [
     component: MarketingAutomation
   },
   {
-    path: '/ai-bot',
-    name: 'ai-bot',
+    path: '/marketing',
+    redirect: '/marketing-automation'
+  },
+  {
+    path: '/ai-alimbot',
+    name: 'ai-alimbot',
     component: AIAlimbotView
+  },
+  {
+    path: '/lists',
+    name: 'lists',
+    component: ListManager
   },
   {
     path: '/lists/:id',

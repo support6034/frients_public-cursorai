@@ -22,7 +22,7 @@
 
       <div 
         class="menu-card bg-white rounded-lg shadow-md p-8 cursor-pointer hover:shadow-lg transition-shadow relative"
-        @click="$router.push('/ai-bot')"
+        @click="$router.push('/ai-alimbot')"
       >
         <div class="menu-card-icon mb-4 text-purple-600">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

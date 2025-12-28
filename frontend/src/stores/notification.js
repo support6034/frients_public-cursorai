@@ -44,7 +44,7 @@ export const useNotificationStore = defineStore('notification', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.get(`/api/ai-bot/settings?industry=${industry}`)
+        const response = await api.get(`/api/ai-alimbot/settings?industry=${industry}`)
         if (response.data.success) {
           this.settings = response.data.data
           // 연동 설정이 있으면 state에 반영
@@ -67,7 +67,7 @@ export const useNotificationStore = defineStore('notification', {
     // 설정 저장
     async saveSettings(settings) {
       try {
-        const response = await api.post('/api/ai-bot/settings', settings)
+        const response = await api.post('/api/ai-alimbot/settings', settings)
         if (response.data.success) {
           this.settings = response.data.data
           return response.data.data
@@ -83,7 +83,7 @@ export const useNotificationStore = defineStore('notification', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.get(`/api/ai-bot/templates?industry=${industry}`)
+        const response = await api.get(`/api/ai-alimbot/templates?industry=${industry}`)
         if (response.data.success) {
           this.templates = response.data.data
           // 선택된 템플릿 ID 추출
@@ -113,7 +113,7 @@ export const useNotificationStore = defineStore('notification', {
     // 템플릿 저장 (전체 객체)
     async saveTemplates(templates) {
       try {
-        const response = await api.post('/api/ai-bot/templates', templates)
+        const response = await api.post('/api/ai-alimbot/templates', templates)
         if (response.data.success) {
           this.templates = response.data.data
           return response.data.data
@@ -128,7 +128,7 @@ export const useNotificationStore = defineStore('notification', {
     async saveTemplatesByIds(templateIds, industry = null) {
       try {
         const industryParam = industry || this.selectedIndustry
-        const response = await api.post('/api/ai-bot/templates/ids', {
+        const response = await api.post('/api/ai-alimbot/templates/ids', {
           templateIds: templateIds
         }, {
           params: {
@@ -149,7 +149,7 @@ export const useNotificationStore = defineStore('notification', {
     async saveIntegration(integration, industry = null) {
       try {
         const industryParam = industry || this.selectedIndustry
-        const response = await api.post('/api/ai-bot/integration', integration, {
+        const response = await api.post('/api/ai-alimbot/integration', integration, {
           params: {
             industry: industryParam
           }
@@ -168,7 +168,7 @@ export const useNotificationStore = defineStore('notification', {
     async syncWorkflows(industry = null) {
       try {
         const industryParam = industry || this.selectedIndustry
-        const response = await api.post('/api/ai-bot/sync-workflows', null, {
+        const response = await api.post('/api/ai-alimbot/sync-workflows', null, {
           params: {
             industry: industryParam
           }

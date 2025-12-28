@@ -45,7 +45,7 @@ function AIBot() {
 
   const loadSettings = async () => {
     try {
-      const response = await api.get('/api/ai-bot/settings');
+      const response = await api.get('/api/ai-alimbot/settings');
       if (response.data.success) {
         setSettings(response.data.data);
       }
@@ -56,7 +56,7 @@ function AIBot() {
 
   const loadSelectedTemplates = async () => {
     try {
-      const response = await api.get('/api/ai-bot/templates');
+      const response = await api.get('/api/ai-alimbot/templates');
       if (response.data.success && response.data.data && response.data.data.length > 0) {
         setSelectedTemplates(response.data.data);
       } else {
@@ -65,7 +65,7 @@ function AIBot() {
         setSelectedTemplates(defaults);
         // 서버에 기본 템플릿 저장
         try {
-          await api.post('/api/ai-bot/templates', { templateIds: defaults });
+          await api.post('/api/ai-alimbot/templates', { templateIds: defaults });
         } catch (err) {
           console.error('기본 템플릿 저장 오류:', err);
         }
@@ -90,12 +90,12 @@ function AIBot() {
 
   const handleSaveSettings = async () => {
     try {
-      await api.post('/api/ai-bot/settings', settings);
-      await api.post('/api/ai-bot/templates', { templateIds: selectedTemplates });
+      await api.post('/api/ai-alimbot/settings', settings);
+      await api.post('/api/ai-alimbot/templates', { templateIds: selectedTemplates });
       
       // 워크플로우 동기화
       try {
-        const syncResponse = await api.post('/api/ai-bot/sync-workflows');
+        const syncResponse = await api.post('/api/ai-alimbot/sync-workflows');
         if (syncResponse.data.success) {
           alert(`설정이 저장되었습니다.\n${syncResponse.data.message}`);
         }
@@ -111,7 +111,7 @@ function AIBot() {
 
   const handleSaveIntegration = async () => {
     try {
-      await api.post('/api/ai-bot/integration', settings.integration);
+      await api.post('/api/ai-alimbot/integration', settings.integration);
       alert('연동 설정이 저장되었습니다.');
     } catch (error) {
       console.error('연동 설정 저장 오류:', error);
