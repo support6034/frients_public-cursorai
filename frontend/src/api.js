@@ -4,9 +4,9 @@ import axios from 'axios';
 
 // 백엔드 URL 자동 감지 함수
 const getBackendURL = () => {
-  // 1. 환경 변수에서 읽기 (GitLab CI/CD에서 설정된 경우 - 우선순위 최고)
-  if (process.env.REACT_APP_API_URL) {
-    return process.env.REACT_APP_API_URL;
+  // 1. 환경 변수에서 읽기 (Vite 환경변수 - 우선순위 최고)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
   }
   
   // 2. 개발 환경: Vite proxy 설정 사용 (localhost:5000)
@@ -21,13 +21,13 @@ const getBackendURL = () => {
       window.location.hostname.includes('changups.kr')) {
     // TODO: Railway 백엔드 배포 후 실제 URL로 변경
     // 예상: https://cursorai-backend.up.railway.app
-    return process.env.VITE_API_URL || '';
+    return import.meta.env.VITE_API_URL || '';
   }
 
   // GitLab Pages 도메인에서 실행 중인 경우 (개발용)
   if (window.location.hostname.includes('gitlab.io')) {
     // TODO: Railway 백엔드 배포 후 실제 URL로 변경
-    return process.env.VITE_API_URL || '';
+    return import.meta.env.VITE_API_URL || '';
   }
   
   // 4. 기본값: 빈 문자열
