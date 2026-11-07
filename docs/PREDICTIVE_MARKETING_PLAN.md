@@ -933,42 +933,45 @@ cp2 소스를 직접 볼 수 없어서, cp2 접근이 있는 다른 AI 둘에게
 | 폴링 | 60초 주기, 매번 `now-90일`부터 재조회(커서 없음), (상품주문번호 × 템플릿) 중복 방지 |
 | 발송·저장 | 현재 DRY_RUN. 발송도 저장도 안 함. 우리 `/api/events`로 보내는 코드 없음 |
 | 상품 2개 이상 | 상품 줄마다 별도 주문 1건 |
-| 구매 이력 저장 | 스마트스토어 경로는 메모리만 사용. 성과 테이블은 11월 6일 백업에서 전부 0행. **구매 이력이 어디에도 없음** |
+| 구매 이력 저장 | 스마트스토어 경로는 메모리만 사용(DRY_RUN). **주문 전용 테이블이 없고**, `sent_records`·`agent_profile`도 0행 → **구매 이력은 없음**. (단 9.8절 참조: `lead`·`message_log`에는 데이터가 많음) |
 | 못 찾은 것 | 상품 원가, 알림톡 열람·클릭·수신거부 콜백, 건당 비용, 야간 발송 제한 |
 | 네이버 예약 | 공식 API 없음(RPA), 이메일 없음, 전화번호가 식별 키 |
 | 운영 규칙 | 발송 동결, 브랜치 `cp2-Rel1.1`, 상용 수정 금지, 배포는 65 단독 |
 
-### 9.2 충돌하거나 어긋나는 점 (확인 필요)
+### 9.2 충돌하거나 어긋나는 점 → 후속 8문항으로 확정 (11-08)
 
-| # | 쟁점 | 보고 1 | 보고 2 |
-|---|---|---|---|
-| 1 | 기존 엔진과의 중복 | `agent_profile`, `agent_profile_event`, `agent_retarget_rule/run`, `agent_outcome_ledger`(통제 그룹 컬럼), `agent_stats_daily`가 있고 비어 있음 | `customer`, `lead`(`lead_score`), `lead_group`(스마트 조건), `events`, `workflow`, `scheduled_actions`, `message_log` 등이 있음. 두 집합의 관계는 불명 |
-| 2 | 폴러의 정체 | `smartstore_poling` 독립 저장소는 cp2에 없음 | `smartstore_poling`은 알림봇 저장소에 해당. 우리 저장소 문서는 이것을 Node.js 별도 저장소로 설명함 |
-| 3 | 조회 기간 한도 | 90일 소급 조회라고 하면서 "36시간 초과 시 빈 응답, 24시간 창으로 제한"이라고도 함(모순) | 90일 고정 조회 |
-| 4 | `orderId` 저장 | 21개 필드에 `orderId` 있음 | 인용한 파싱 코드에서 `orderId`는 대체값으로만 쓰이고 저장 안 됨, 주문 묶음 처리 없음 |
-| 5 | 고객 단위 동의 | `agent_profile.consent_marketing/consent_at` 있음 | `lead`에는 없고 회사 단위(`subscribed`)만 있음 |
-| 6 | 테이블 이름 | 백업에 `autotalk_settings`, `autotalk_sent_records` | 스키마에 `ai_bot_settings`, `sent_records` |
-| 7 | 예약 수집 도구와 병합 키 | `2_pull_once.mjs`, `5_apply.mjs`, 키 = 전화+일시, 상태 3종 | `naver-booking-download.mjs`, `import_booking.mjs`, 키 = 예약번호(없으면 전화@일시), 상태 7~9종 |
-| 8 | 샘플의 성격 | "실주문" 예시, 이메일 `null` | "스키마 예시", 이메일 값 있음. **이메일이 실제로 오는지는 실측 없음** |
+후속 질문 8개(9.6절)에 두 AI가 다시 답했고, 대부분 확정되었습니다. 상세 근거는 9.8절에 있습니다.
 
-### 9.3 두 보고서 모두 확인하지 못한 것
+| # | 쟁점 | 확정 결과 (11-08) |
+|---|---|---|
+| 1 | 기존 엔진과의 중복 | **같은 smartup DB 하나**에 `agent_*`와 `lead/customer/scheduled_actions/message_log`가 공존. `agent_*`는 agent-core(HubService)가, 스마트스토어는 ai-alimbot이 채움. 둘 다 실재 |
+| 2 | 폴러의 정체 | Node `smartstore_poling`은 **없음**. 라이브 수집기 = ai-alimbot Java 폴러. smartup의 `AutoSendService`는 `.legacy`(비활성). 라이브 배포 SHA는 미대조 |
+| 3 | 조회 기간 한도 | **90일 백필은 실제로 안 됨.** 네이버는 36시간 초과 질의에 오류가 아니라 빈 응답을 줌(규격문서 실측). 페이지 처리(moreSequence) 코드도 없어 대량 시 누락 위험 |
+| 4 | `orderId` 저장 | **저장 안 함**(보고 1이 스스로 정정). `OrderDetail`에 `orderId` 필드 없음, `productOrderId`가 null일 때 폴백으로만 사용. 주문 묶음 없음 |
+| 5 | 고객 단위 동의 | **둘 다 있음.** 리드 단위 `lead.marketing_consent_yn`, 프로필 단위 `agent_profile.consent_marketing`+`consent_at`. 회사 단위 `ai_bot_settings.subscribed`는 별개 |
+| 6 | 테이블 이름 | **`ai_bot_settings`가 정본**(코드가 읽음). `autotalk_*`는 구 AutoTalk 잔재(0행). 같은 DB에 두 벌 공존이 혼동의 원인이었음 |
+| 7 | 예약 수집 도구·병합 키 | **두 세대 공존.** (A) RPA 실시간 `2_pull_once`/`4_daemon`→`5_apply`, 키 = 전화+일시 (B) CSV `naver-booking-download`→`import_booking`, 키 = 예약번호+일시. 현행 라이브 = A |
+| 8 | 샘플의 성격 | 규격문서 마스킹 샘플은 `ordererEmail=null`, `ordererTel`은 `010-`(안심번호 아님). **단 이는 코드가 파싱한 부분집합이며 네이버 원본 전체의 증거가 아님** — 실측은 라이브 승인 호출 필요(미수행) |
 
-- 운영 집계: 이벤트 수, 이메일·전화 채움률, 12~24개월 주문·고객 수, 재구매율
-- 네이버 응답의 할인·쿠폰·배송비·단가·클레임 필드 존재 여부, 조회 한도의 정확한 값, 목록 응답의 페이지 처리
-- 주문자 전화번호가 안심번호(`0504-…`)인 비율, 구매자 고유 번호 존재 여부
+### 9.3 아직 확인하지 못한 것 (후속 뒤에도 남음)
+
+- **라이브 원본 1건**: 네이버 응답에 할인·쿠폰·배송비·단가·클레임 필드가 오는지, `ordererEmail`이 실제로 채워지는지, `ordererTel`이 안심번호(`0504-…`)인지. 라이브 승인 호출(크레덴셜·IP 등록)이 필요해 두 보고서 모두 미수행
+- **라이브 운영 DB 집계**: 이벤트명별 건수·기간, 최근 12~24개월 주문·고객 수, 재구매율(백업 수치는 9.8절에 있으나 라이브 아님)
+- 구매자 고유 번호(buyerId) 존재 여부(코드는 읽지 않음)
 - 반품·교환·환불 조회 방법(현재는 `CANCELED`뿐, "환불완료" 상태 없음)
-- `agent_profile`을 채우는 코드의 존재 여부
-- 알림봇 라이브 배포 버전(SHA, 두 보고서 모두 작업본 기준)
-- 알림톡의 열람·클릭 데이터 제공 여부(발송 사업자 문서로 확인)
+- 알림봇 라이브 배포 버전(SHA)과 작업본의 일치 여부(작업본 HEAD는 `548f654`로 확인, 라이브 미대조)
+- 알림톡의 열람·클릭·수신거부 콜백 제공 여부(소스에 저장 구조 없음, 발송 사업자 문서로 확인 필요)
+- `lead.marketing_consent_yn`의 실제 갱신 지점(컬럼은 확인, setter 줄 미확정)
 
-### 9.4 이 기획서에 미치는 영향
+### 9.4 이 기획서에 미치는 영향 (후속 확정 반영)
 
-1. **구현 위치**: smartup이 이미 워크플로우, 지연 액션, 이벤트, 리드, 퍼널, 캠페인을 갖고 있다면 8.1절의 "CursorAI에 구현"은 중복이 될 수 있습니다.
-2. **신규 가치로 남는 부분**(두 보고서가 "찾지 못함"이라고 한 것): 생애주기 분류, RFM·가치 세그먼트, `lead_score`를 채우는 산식, 통제 그룹의 실제 배정·집계, 재구매 주기, 인센티브 상한, 빈도 상한.
-3. **구매 이력은 백필로 새로 가져와야 합니다.** 방법은 조회 한도(충돌 #3)에 달려 있습니다.
-4. **고객 키**: 스마트스토어 이메일은 불확실하고 예약은 이메일이 없으므로 전화 중심이며 안심번호 위험이 있습니다. `customer_identities` 설계는 유지합니다.
-5. **주문 수 계산**: 상품 줄마다 주문 번호가 다르므로 `orderId` 묶음이 필요하고, 저장 여부는 충돌 #4에 달려 있습니다.
-6. **반품률(13장)**은 별도 클레임 조회가 필요합니다. **참여 모델(9장)**은 열람·클릭·수신거부 데이터가 없어 구매·방문 기반 근사로 대체합니다. **마진 가치(8장)**는 원가와 알림톡 건당 비용을 별도로 입력해야 합니다.
+1. **구현 위치**: smartup은 워크플로우, 지연 액션(`scheduled_actions`), 이벤트(`events`/`workflow_events`), 리드(`lead` 6.4만 건), 퍼널(`FunnelService`), 캠페인을 **이미 운영 중**입니다(백업에 실데이터). 8.1절의 "CursorAI에 구현"은 중복이 큽니다. **선택지 B(smartup 대상 명세서)의 근거가 강해졌습니다.**
+2. **신규로 남는 부분**(두 보고서가 "찾지 못함"): 생애주기 분류, RFM·가치 세그먼트, `lead_score`를 채우는 산식, 통제 그룹의 실제 배정·집계(단 `agent_outcome_ledger`에 22건 실데이터 존재 → 집계 틀은 있음), 재구매 주기, 인센티브 상한, 빈도 상한(단 `agent_retarget_rule`에 `dedup_days`·`daily_cap` 있음).
+3. **구매 이력 백필은 현실적으로 막혀 있습니다.** 네이버 조회가 36시간을 넘기면 빈 응답이라 90일 소급이 안 되고 페이지 처리도 없습니다(충돌 #3 확정). **과거 12~24개월 구매 이력을 API로 긁어오는 방식은 재검토가 필요**합니다. 대안: 스마트스토어 판매자센터의 주문 내보내기(CSV), 정산 데이터, 또는 지금부터 들어오는 주문을 쌓기.
+4. **고객 키**: 스마트스토어는 `ordererEmail`이 null일 수 있고 예약은 이메일이 아예 없습니다. **전화 중심 식별이 맞고**, 예약·주문을 묶는 공통 키도 전화(`phone_norm`)입니다. `customer_identities` 설계 유지. 안심번호 여부는 라이브 미확인.
+5. **주문 수·몇 번째 구매 계산**: `orderId`가 저장되지 않고(충돌 #4 확정) 상품 줄마다 주문 번호가 달라, 주문 묶음과 최초/반복 판정을 **적재 단계에서 새로 만들어야** 합니다.
+6. **반품률(13장)**은 `CANCELED`만 있고 클레임 상세가 없어 별도 조회가 필요합니다. **참여 모델(9장)**은 열람·클릭·수신거부 데이터가 없어 구매·방문 기반 근사로 대체합니다. **마진 가치(8장)**는 원가(cp2 내 소스 없음 확정)와 알림톡 건당 비용을 별도 입력해야 합니다.
+7. **수신 동의는 이미 리드 단위로 있습니다**(`lead.marketing_consent_yn`). 우리 계획의 채널별 동의는 이 컬럼을 채널별로 확장하는 형태로 설계합니다.
 
 ### 9.5 결정이 필요한 사항
 
@@ -997,3 +1000,61 @@ cp2 소스를 직접 볼 수 없어서, cp2 접근이 있는 다른 AI 둘에게
 
 - 보고 2: cp2 중첩 저장소의 remote URL에 개인 액세스 토큰(PAT)이 박혀 있다는 경고가 있습니다. 회전이나 제거를 검토해야 합니다.
 - 보고 1: 프런트의 `lead-sample.json`에 실제 개인정보가 평문으로 있고, 백업의 설정 테이블에 스마트스토어 클라이언트 시크릿이 평문으로 있다는 지적이 있습니다.
+
+### 9.8 후속 8문항 확정 내용 (11-08, 두 보고서 종합)
+
+> 근거: 11월 6일 운영 DB 백업(`cp2/_db_backup/cp2-Rel1.1_smartup_20261106.sql`), agent-core·ai-alimbot 소스, 규격문서. **라이브 DB·네이버 라이브 원본은 미조회.**
+
+**1. DB와 소스 분리**
+- `agent_*`, `lead`, `customer`, `scheduled_actions`, `message_log`, `sent_records`, `ai_bot_settings`, `autotalk_*`가 **모두 같은 smartup DB(한 public 스키마)**에 있음.
+- `agent_*`는 **agent-core**가 채움(`AgentProfileMapper.xml`, `hub/HubService.java`, `db/agent/008_agent_profile.sql`). 스마트스토어 수집은 **ai-alimbot**. 스마트업 주문톡/예약톡 제품 표는 `autotalk_*`.
+- 정본 설정 테이블은 `ai_bot_settings`. `autotalk_settings`/`autotalk_sent_records`는 구 AutoTalk 잔재(0행).
+
+**2. 폴러**
+- cp2에 Node `smartstore_poling` 저장소 없음(두 보고서 전수 탐색 일치). 실체는 ai-alimbot Java 폴러(`SmartStorePollingService` 주석 "v01 AutoSendService 복원").
+- 알림봇 작업본 HEAD = `548f654`(2026-03-25). 라이브 배포본과의 일치는 미확정.
+
+**3. `orderId` 비저장 (정정 확정)**
+- `OrderDetail` 선언(`SmartStoreService.java:550-571`)에 `orderId` 필드 없음. 파싱 `:363-366`에서 `productOrderId`가 null일 때만 폴백으로 대입. 별도 저장 안 함.
+
+**4. 조회 한도 (중요)**
+- 코드는 `now-90일`로 요청하나(`SmartStorePollingService.java:284`), 규격문서(`docs/알림봇_get_orders_받는쪽_규격.md:114`): "네이버는 36시간 이상을 물으면 오류가 아니라 빈 응답을 준다(2026-09-01 실측)". → **90일 백필은 실제 동작 안 함**, 최근 변경분만.
+- 페이지 처리(moreSequence) 코드 없음. `getChangedOrders`는 응답을 1회만 읽음. 대량 시 누락 위험.
+
+**5. 금액·클레임·식별 (라이브 미확인)**
+- 코드가 파싱하는 금액은 `totalPaymentAmount` 하나. 할인·쿠폰·포인트·배송비·단가분리·클레임 미파싱.
+- 규격 샘플: `ordererEmail=null`, `ordererTel="010-…"`(0504 아님). **단 파싱된 부분집합이며 네이버 원본 전체의 증거 아님.** 원본 확인은 라이브 승인 호출 필요.
+
+**6. 수신 동의**
+- 리드 단위 `lead.marketing_consent_yn`, 프로필 단위 `agent_profile.consent_marketing`+`consent_at`(`008_agent_profile.sql:20-21`). 갱신은 agent-core HubService의 consent 이벤트. 회사 단위 `ai_bot_settings.subscribed`는 별개. `lead.marketing_consent_yn`의 setter 줄은 미확정.
+
+**7. 네이버 예약 병합 키 이원화**
+- (A) RPA 실시간: `2_pull_once`/`4_daemon`→`5_apply`, 병합키 = 전화+일시.
+- (B) CSV 다운로드: `naver-booking-download`→`import_booking`, 병합키 = 예약번호+일시.
+- 현행 라이브 = A(RPA, 세션 만료 시 사람 2FA 필요). 두 경로의 병합키가 다름.
+
+**8. 운영 집계 (11-06 백업 기준, 라이브 아님)**
+
+| 표 | 행수 | 비고 |
+|---|---|---|
+| `lead` | **64,482** | email·phone 채움 거의 100% |
+| `customer` | **1,949** | |
+| `message_log` | **139,277** | 발송 이력(이벤트명·기간 분포는 미산출) |
+| `scheduled_actions` | 48 | 지연 액션 |
+| `agent_outcome_ledger` | 22 | 성과원장 실데이터 존재 |
+| `sent_records`, `agent_profile`, `agent_profile_event`, `ai_bot_settings`, `autotalk_*` | 0 | 스마트스토어 저장분·프로필 없음 |
+
+- **주문 전용 표 없음** — 주문은 스마트스토어 API 경유, `sent_records` 0이라 저장분 없음.
+- 정확한 기간·재구매율은 라이브 DB 쿼리가 필요(미수행).
+
+**이전 보고 대비 정정 3건**
+1. `OrderDetail`에 `orderId` 없음(보고 1의 초판 A-3 오류).
+2. "성과·저장 테이블 전부 0"은 **과소보고** — `lead` 6.4만, `message_log` 13.9만, `customer` 1,949, 성과원장 22건이 실존. 0인 것은 스마트스토어 `sent_records`·`agent_profile`뿐.
+3. 네이버 병합키 이원화(RPA 전화+일시 vs CSV 예약번호+일시).
+
+### 9.9 다음 단계 (후속 반영)
+
+1. **구현 위치를 B로 확정할지 결정**이 선행입니다(9.4-1 근거 강화). 확정 시 `docs/SMARTUP_GAP_ANALYSIS.md`를 cp2 팀 명세서로 다듬습니다.
+2. **구매 이력 확보 방식 재설계**: 90일 API 백필이 막혔으므로, (a) 판매자센터 주문 CSV 내보내기 (b) 정산 데이터 (c) 지금부터 적재 중 선택. cp2 쪽에 확인 필요.
+3. **라이브 승인 조사 2건**(대표 승인 시): 네이버 원본 1건의 금액·클레임·안심번호·이메일, 라이브 DB의 기간·재구매율 집계.
+4. 신규로 남는 7개(9.4-2)의 명세를 `SMARTUP_GAP_ANALYSIS.md`에 반영하되, 재사용 가능 자산(`scheduled_actions`, `agent_retarget_rule`의 `daily_cap`, `agent_outcome_ledger`의 holdout 컬럼)을 전제로 "확장" 중심으로 기술.
